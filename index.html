@@ -106,15 +106,6 @@
           blendMode: "color-burn",
 		      listMode:"hide"
         });
-
-       /* const featureLayer = new FeatureLayer({
-          portalItem: {
-            id: "68525754fd974174828b37f5ad6f6641"
-          },
-          outFields: ["*"],
-		  listMode:"hide"
-        });
-        */
    
 
         //＊＊圖層控制的layer＊＊
@@ -242,18 +233,6 @@
               content: document.getElementById("chartPanel")
             });
 
-            const search = new Search({
-              view: view,
-              resultGraphicEnabled: false,
-              popupEnabled: false
-            });
-
-            // Resume drawBufferPolygon() function; user searched for a new location
-            // Must update the buffer polygon and re-run the stats query
-            search.on("search-complete", function () {
-              pausableWatchHandle.resume();
-            });
-
             // Legend widget
             const legend = new Legend({
               view: view,
@@ -339,7 +318,6 @@
 
             // Add our components to the UI
             view.ui.add(chartExpand, "bottom-left");
-            view.ui.add(search, "top-right");
             view.ui.add(legendExpand, "bottom-right");
             view.ui.add(layerList, "top-right");
           });
