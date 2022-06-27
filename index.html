@@ -98,7 +98,7 @@
           centerGeometryAtStart,
           labelGraphic;
 
-        const unit = "meters";
+        const unit = "kilometers";
 
         // Create layers
         const graphicsLayer = new GraphicsLayer({listMode:"hide"});
@@ -440,8 +440,8 @@
           labelGraphic.geometry = edgeGraphic.geometry;
           labelGraphic.symbol = {
             type: "text",
-            color: "#FFEB00",
-            text: length.toFixed(2) + " meters",
+            color: "#B3D9D9",
+            text: length.toFixed(2) + " kilometers",
             xoffset: 50,
             yoffset: 10,
             font: {
@@ -586,7 +586,7 @@
                 type: "simple-fill",
                 color: [150, 150, 150],
                 outline: {
-                  color: "#FFEB00",
+                  color: "#BC8F8F",
                   width: 2
                 }
               }
@@ -648,8 +648,11 @@
                 datasets: [
                   {
                     label: ["SOS","AED","fireEX","fireHY"],
-                    backgroundColor: ["#B266FF","#0080FF","#FD7F6F","#B2E061"],
-                    borderColor: "#004C99",
+                    backgroundColor: ["#48308D",
+                      "#F08080",
+                      "#CD5C5C",
+                      "#A9A9A9"],
+                    borderColor: "#A9A9A9",
                     borderWidth: 0.25,
                     data: femaleAgeData
                   }
@@ -710,7 +713,7 @@
             symbol: {
               type: "text",
               color: "#FFEB00",
-              text: length.toFixed(2) + " meters",
+              text: length.toFixed(2) + " kilometers",
               xoffset: 50,
               yoffset: 10,
               font: {
