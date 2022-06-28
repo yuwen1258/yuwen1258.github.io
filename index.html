@@ -98,7 +98,7 @@
           centerGeometryAtStart,
           labelGraphic;
 
-        const unit = "kilometers";
+        const unit = "meters";
 
         // Create layers
         const graphicsLayer = new GraphicsLayer({listMode:"hide"});
@@ -145,8 +145,8 @@
         const view = new MapView({
           container: "viewDiv",
           map: map,
-          zoom: 14,
-          center: [120.219312,22.997535],
+          zoom: 10,
+          center: [120.216102,22.002679],
           constraints: {
             maxScale: 0,
             minScale: 300000
@@ -419,7 +419,7 @@
           labelGraphic.symbol = {
             type: "text",
             color: "#B3D9D9",
-            text: length.toFixed(2) + " kilometers",
+            text: length.toFixed(2) + " meters",
             xoffset: 50,
             yoffset: 10,
             font: {
@@ -691,7 +691,7 @@
             symbol: {
               type: "text",
               color: "#FFEB00",
-              text: length.toFixed(2) + " kilometers",
+              text: length.toFixed(2) + " meters",
               xoffset: 50,
               yoffset: 10,
               font: {
