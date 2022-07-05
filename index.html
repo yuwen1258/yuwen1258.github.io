@@ -276,6 +276,7 @@
 
             // Display the Legend in an Expand widget
             const legendExpand = new Expand({
+              expandIconClass:"esri-icon-legend",
               expandTooltip: "Show Legend",
               expanded: false,
               view: view,
@@ -319,10 +320,16 @@
             //**LayerList: 控制圖層之元件
             const layerList = new LayerList({
                 view: view,
-                listItemCreatedFunction: controlActions
-                
-                
+                listItemCreatedFunction: controlActions,
             });
+
+            const layerListExpand = new Expand({
+              expandIconClass: "esri-icon-layer-list",
+              expandTooltip:"Expand LayerList",
+              expanded:false,
+              view:view,
+              content:layerList
+            })
 
             layerList.on("trigger-action", function(event) {
                 
@@ -348,7 +355,7 @@
             // Add our components to the UI
             view.ui.add(chartExpand, "bottom-left");
             view.ui.add(legendExpand, "bottom-right");
-            view.ui.add(layerList, "top-right");
+            view.ui.add(layerListExpand, "top-right");
           });
 
           // Close the 'help' popup when view is focused
