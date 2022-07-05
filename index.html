@@ -8,8 +8,7 @@
     />
 
     <title>
-      FeatureLayerView - query statistics by geometry | Sample | ArcGIS API for
-      JavaScript 4.22
+      動態環域防災設施數 | ArcGIS API for JavaScript 4.22
     </title>
 
     <link
@@ -33,12 +32,13 @@
         line-height: 1.5em;
         overflow: auto;
         padding: 10px;
-        width: 600px;
-        height: 330px;
+        width: 430px;
+        height: 250px;
       }
 
       .chart {
-        height: 280px;
+        width: 380px;
+        height: 200px;
       }
 
       .count {
@@ -85,7 +85,7 @@
         Legend,
         Search,
         watchUtils,
-        GroupLayer,LayerList,FieldInfo
+        GroupLayer, LayerList, FieldInfo
       ) {
         // App 'globals'
         let sketchViewModel, featureLayerView, pausableWatchHandle, chartExpand;
@@ -106,52 +106,73 @@
           blendMode: "color-burn",
 		      listMode:"hide"
         });
-   
 
-        //＊＊圖層控制的layer＊＊
+        //＊＊圖層控制的layer＊＊，可刪
         
         const incampus = new FeatureLayer({
-			title: "校園內車道",
-			url: "https://services5.arcgis.com/yqmzFsAzBUNEIWLw/arcgis/rest/services/roadincampus/FeatureServer"
-		});
-		const offcampus = new FeatureLayer({
-			title: "校園外車道",
-			url: "https://services5.arcgis.com/yqmzFsAzBUNEIWLw/arcgis/rest/services/roadoffcampus/FeatureServer"
-		});
+          title: "校園內車道",
+          url: "https://services5.arcgis.com/yqmzFsAzBUNEIWLw/arcgis/rest/services/roadincampus/FeatureServer"
+        });
+        const offcampus = new FeatureLayer({
+          title: "校園外車道",
+          url: "https://services5.arcgis.com/yqmzFsAzBUNEIWLw/arcgis/rest/services/roadoffcampus/FeatureServer"
+        });
 
-    //
-    const featureLayer = new FeatureLayer({
-			title: "test_point",
-			url: "https://services5.arcgis.com/yqmzFsAzBUNEIWLw/arcgis/rest/services/test_point/FeatureServer"
-		});
-				
+        // 改！防災設施點圖層
+        const featureLayer = new FeatureLayer({
+          title: "防災設施",
+          url: "https://services5.arcgis.com/yqmzFsAzBUNEIWLw/arcgis/rest/services/%E9%98%B2%E7%81%BD%E8%A8%AD%E6%96%BD/FeatureServer"
+        });
+
+        // 改！緊急避難空間
+        const space = new FeatureLayer({
+          title: "緊急避難空間",
+          url: "https://services5.arcgis.com/yqmzFsAzBUNEIWLw/arcgis/rest/services/9350913%E7%B7%8A%E6%80%A5%E9%81%BF%E9%9B%A3%E7%A9%BA%E9%96%93/FeatureServer"
+        });
+
+        // 改！校區建物
+        const building = new FeatureLayer({
+          title: "力行校區建物",
+          url: "https://services5.arcgis.com/yqmzFsAzBUNEIWLw/arcgis/rest/services/9310101%E6%B0%B8%E4%B9%85%E6%80%A7%E6%88%BF%E5%B1%8B/FeatureServer"
+        });
 		
-      const ncku = new GroupLayer({
-		  title: "NCKU road",
-		  visible: true,
-		  //visibilityMode: "exclusive", //只能開啟一圖層
-		  layers: [incampus, offcampus],
-		  opacity: 0.75
-		});
+        
         //**圖層控制的layer**
 
         // Create map
         const map = new Map({
-          basemap: "dark-gray-vector",
-          layers: [ bufferLayer, graphicsLayer,ncku,featureLayer,ncku]
+          basemap: "gray-vector",
+          layers: [ bufferLayer, graphicsLayer, building, space, featureLayer]
         });
 
         // Create view
         const view = new MapView({
           container: "viewDiv",
           map: map,
-          zoom: 16,
-          center: [120.216102,23.002679],
+          zoom: 17,
+          center: [120.216002,23.002530],
           constraints: {
             maxScale: 0,
             minScale: 300000
           }
         });
+
+        var template = {
+        // autocasts as new PopupTemplate()
+        title: "防災設施資訊 ",
+        content: [
+          {
+            type: "fields",
+            fieldInfos: [
+              {
+                fieldName: "name",
+                label: "防災設施種類"
+              }
+            ]
+          }
+        ]
+      };
+      featureLayer.popupTemplate = template;
 
  
         // Set up statistics definition for client-side query
@@ -159,7 +180,7 @@
         const statDefinitions = [
            {
               onStatisticField:
-                "CASE WHEN name = 'SOS' THEN 1 ELSE 0 END",
+                "CASE WHEN name = 'SOS緊急求救系統' THEN 1 ELSE 0 END",
               outStatisticFieldName: "SOS",
               statisticType: "sum"
             },
@@ -171,13 +192,13 @@
             },
             {
               onStatisticField:
-                "CASE WHEN name = 'fireEX' THEN 1 ELSE 0 END",
+                "CASE WHEN name = '滅火器' THEN 1 ELSE 0 END",
               outStatisticFieldName: "fireEX",
               statisticType: "sum"
             },
             {
               onStatisticField:
-                "CASE WHEN name = 'fireHY' THEN 1 ELSE 0 END",
+                "CASE WHEN name = '消防栓' THEN 1 ELSE 0 END",
               outStatisticFieldName: "fireHY",
               statisticType: "sum"
             },
@@ -240,6 +261,14 @@
                 {
                   layer: featureLayer,
                   title: "防災設施"
+                },
+                {
+                  layer:space,
+                  title:"緊急避難空間"
+                },
+                {
+                  layer:building,
+                  title:"力行校區建物"
                 }
               ]
             });
@@ -418,7 +447,7 @@
           labelGraphic.geometry = edgeGraphic.geometry;
           labelGraphic.symbol = {
             type: "text",
-            color: "#B3D9D9",
+            color: "#3D6566",  // 文字顏色
             text: length.toFixed(2) + " meters",
             xoffset: 50,
             yoffset: 10,
@@ -445,30 +474,7 @@
           query.geometry = buffer;
 
           // Query the features on the client using FeatureLayerView.queryFeatures
-          /*return featureLayerView
-            .queryFeatures(query)
-            .then(function (results) {
-              // Statistics query returns a feature with 'stats' as attributes
-              const attributes = results.features[0].attributes;
-              // Loop through attributes and save the values for use in the population pyramid.
-              /*for (var key in attributes) {
-                if (key.includes("SOS")) {
-                  femaleAgeData.push(attributes[key]);
-                } else {
-                  // Make 'all male age group population' total negative so that
-                  // data will be displayed to the left of female age group
-                  maleAgeData.push(-Math.abs(attributes[key]));
-                }
-                
-              }
-              // Return information, seperated by gender
-              return [femaleAgeData];
-            })
-            .catch(function (error) {
-              console.log(error);
-            });*/
-
-
+          
             return featureLayerView.queryFeatures(query).then((result) => {
             const allStats = result.features[0].attributes;
 
@@ -531,7 +537,7 @@
               type: "simple-marker",
               style: "circle",
               size: 10,
-              color: [0, 255, 255, 0.5]
+              color: [176, 207, 208, 0.5]  // 圓心顏色
             };
             centerGraphic = new Graphic({
               geometry: centerPoint,
@@ -553,7 +559,7 @@
               geometry: polyline,
               symbol: {
                 type: "simple-line",
-                color: [254, 254, 254, 1],
+                color: [254, 254, 254, 1],  // 半徑顏色
                 width: 2.5
               }
             });
@@ -562,9 +568,9 @@
               geometry: buffer,
               symbol: {
                 type: "simple-fill",
-                color: [150, 150, 150],
+                color: [150, 150, 150], // 圓內顏色
                 outline: {
-                  color: "#BC8F8F",
+                  color: "#304F50",  // 圓周顏色
                   width: 2
                 }
               }
@@ -618,17 +624,17 @@
               data: {
                 // age groups
                 labels: [
-                  "SOS",
+                  "SOS緊急求救系統",
                   "AED",
-                  "fireEX",
-                  "fireHY"
+                  "滅火器",
+                  "消防栓"
                 ],
                 datasets: [
                   {
-                    label: ["SOS","AED","fireEX","fireHY"],
-                    backgroundColor: ["#48308D",
-                      "#F08080",
-                      "#CD5C5C",
+                    label: ["數量"],
+                    backgroundColor: ["#9EAAD7",
+                      "#D69DBC",
+                      "#CD6666",
                       "#A9A9A9"],
                     borderColor: "#A9A9A9",
                     borderWidth: 0.25,
@@ -644,7 +650,7 @@
                 },
                 title: {
                   display: true,
-                  text: "防災設施Buffer內數量"
+                  text: "Buffer內防災設施數量"
                 },
                 scales: {
                   yAxes: [
@@ -661,13 +667,9 @@
                   xAxes: [
                     {
                       ticks: {
-                        /*
-                        callback: function (value) {
-                          const val = Math.abs(parseInt(value));
-                          return numberWithCommas(val);
-                        }*/
                         beginAtZero: true,
-                        precision: 0
+                        precision: 0,
+                        max:10
                       },
                       scaleLabel: {
                         display: true,
